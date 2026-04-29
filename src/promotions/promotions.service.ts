@@ -1,0 +1,42 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Promotion } from './entities/promotion.entity';
+import { CreatePromotionDto } from './dto/create-promotion.dto';
+import { UpdatePromotionDto } from './dto/update-promotion.dto';
+
+@Injectable()
+export class PromotionsService {
+  constructor(
+    @InjectRepository(Promotion)
+    private readonly promotionRepository: Repository<Promotion>,
+  ) {}
+
+  async create(createPromotionDto: CreatePromotionDto): Promise<Promotion> {
+    const promotion = this.promotionRepository.create(createPromotionDto);
+    return await this.promotionRepository.save(promotion);
+  }
+
+  async findAll(): Promise<Promotion[]> {
+    return await this.promotionRepository.find();
+  }
+
+  async findOne(id: number): Promise<Promotion> {
+    const promotion = await this.promotionRepository.findOne({
+      where: { id_promotion: id },
+    });
+    if (!promotion) throw new NotFoundException(`Promotion with ID ${id} not found`);
+    return promotion;
+  }
+
+  async update(id: number, updatePromotionDto: UpdatePromotionDto): Promise<Promotion> {
+    const promotion = await this.findOne(id);
+    Object.assign(promotion, updatePromotionDto);
+    return await this.promotionRepository.save(promotion);
+  }
+
+  async remove(id: number): Promise<void> {
+    const promotion = await this.findOne(id);
+    await this.promotionRepository.remove(promotion);
+  }
+}
