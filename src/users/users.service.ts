@@ -31,9 +31,11 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.findOne(id);
+    const user = await this.userRepository.findOne({ where: { id_user: id } });
+    if (!user) throw new NotFoundException(`User with ID ${id} not found`);
     Object.assign(user, updateUserDto);
-    return await this.userRepository.save(user);
+    await this.userRepository.save(user);
+    return await this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
@@ -48,5 +50,12 @@ export class UsersService {
     });
     if (!user) throw new UnauthorizedException('User not found');
     return user;
+  }
+
+  async findByDni(dni: string): Promise<User | null> {
+    return await this.userRepository.findOne({
+      where: { dni },
+      relations: ['role'],
+    });
   }
 }

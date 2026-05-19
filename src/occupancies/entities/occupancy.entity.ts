@@ -1,14 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Reservation } from '../../reservations/entities/reservation.entity';
 import { Room } from '../../rooms/entities/room.entity';
+import { WalkInGuest } from '../../walkin/entities/walk-in-guest.entity';
 
 @Entity('occupancies')
 export class Occupancy {
   @PrimaryGeneratedColumn()
   id_occupancy: number;
 
-  @Column()
-  id_reservation: number;
+  @Column({ nullable: true })
+  id_reservation: number | null;
 
   @ManyToOne(() => Reservation)
   @JoinColumn({ name: 'id_reservation' })
@@ -32,6 +33,9 @@ export class Occupancy {
 
   @Column({ nullable: true, type: 'text' })
   guest_signature: string;
+
+  @OneToMany(() => WalkInGuest, (wg) => wg.occupancy)
+  walk_in_guests?: WalkInGuest[];
 
   @CreateDateColumn()
   created_at: Date;

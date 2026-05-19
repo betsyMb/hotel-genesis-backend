@@ -173,7 +173,87 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ---
 
-## Services (Servicios)
+## Walk-In (Registro sin reservación)
+**Protegido:** Admin/Receptionist  
+Endpoint para registrar huéspedes que llegan sin reservación previa. Automaticamente crea un usuario si el DNI no existe, crea la ocupación, cambia el estado de la habitación a "occupied" y registra todos los acompañantes.
+
+| Método | Ruta | Rol requerido | Descripción |
+|--------|------|---------------|-------------|
+| POST | `/walkin/checkin` | Administrator, Receptionist | Check-in walk-in (registrar huésped sin reserva) |
+| POST | `/walkin/checkout` | Administrator, Receptionist | Check-out walk-in (finalizar ocupación activa) |
+
+### POST /walkin/checkin
+
+**Request body:**
+```json
+{
+  "room_id": 1,
+  "guest": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "dni": "12345678A",
+    "phone": "+1234567890"
+  },
+  "additional_guests": [
+    {
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "dni": "87654321B"
+    }
+  ]
+}
+```
+
+**Response (201):**
+```json
+{
+  "message": "Check-in successful",
+  "occupancy_id": 1,
+  "room_id": 1,
+  "room_number": "101",
+  "user_id": 3,
+  "user_created": true,
+  "guest_count": 2
+}
+```
+
+**Comportamiento:**
+- Busca al huésped principal por `dni` en la tabla `users`
+- Si no existe, crea un nuevo usuario con rol "Client", email auto-generado (`walkin-{dni}@hotel.app`), contraseña = dni hasheado, y `dni` almacenado
+- Crea un registro en `occupancies` con estado `active`
+- Guarda todos los huéspedes (principal + adicionales) en `walk_in_guests`
+- Cambia la habitación a `room_status: "occupied"`
+- **Error 409** si la habitación no está disponible
+
+### POST /walkin/checkout
+
+**Request body:**
+```json
+{
+  "room_id": 1
+}
+```
+
+**Response (200):**
+```json
+{
+  "message": "Check-out successful",
+  "room_id": 1,
+  "room_number": "101",
+  "occupancy_id": 1,
+  "total_nights": 3,
+  "checked_in": "2026-05-10T10:00:00.000Z",
+  "checked_out": "2026-05-13T10:00:00.000Z"
+}
+```
+
+**Comportamiento:**
+- Busca la ocupación activa para la habitación indicada
+- Actualiza `actual_check_out` y cambia `occupancy_status` a `completed`
+- Cambia la habitación a `room_status: "available"`
+- **Error 404** si no hay ocupación activa para esa habitación
+
+---
 **Protegido:** Todos pueden ver, Admin/Manager pueden modificar
 
 | Método | Ruta | Rol requerido | Descripción |

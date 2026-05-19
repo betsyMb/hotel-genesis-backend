@@ -15,6 +15,9 @@ export class User {
   @Column({ length: 20, nullable: true })
   phone: string;
 
+  @Column({ length: 20, nullable: true, unique: true })
+  dni: string;
+
   @Column()
   password_hash: string;
 

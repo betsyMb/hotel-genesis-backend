@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   const config = new DocumentBuilder()
@@ -24,6 +24,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
+  // ✅ SOLUCIÓN: Escuchar en todas las interfaces (IPv4 e IPv6)
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port, '0.0.0.0', () => {
+    console.log(`✅ Server running on:`);
+    console.log(`   - http://localhost:${port}`);
+    console.log(`   - http://192.168.68.100:${port}`);
+    console.log(`   - http://0.0.0.0:${port}`);
+  });
 }
 bootstrap();

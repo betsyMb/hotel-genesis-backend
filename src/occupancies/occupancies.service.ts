@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { Occupancy } from './entities/occupancy.entity';
 import { CreateOccupancyDto } from './dto/create-occupancy.dto';
 import { UpdateOccupancyDto } from './dto/update-occupancy.dto';
@@ -41,5 +41,20 @@ export class OccupanciesService {
   async remove(id: number): Promise<void> {
     const occupancy = await this.findOne(id);
     await this.occupancyRepository.remove(occupancy);
+  }
+
+  async findByRoomAndStatus(roomId: number, status: string): Promise<Occupancy[]> {
+    return await this.occupancyRepository.find({
+      where: { id_room: roomId, occupancy_status: status },
+      relations: ['reservation', 'room'],
+    });
+  }
+
+  async findCompletedWalkIns(): Promise<Occupancy[]> {
+    return await this.occupancyRepository.find({
+      where: { occupancy_status: 'completed' },
+      relations: ['room', 'reservation'],
+      order: { actual_check_out: 'DESC' },
+    });
   }
 }

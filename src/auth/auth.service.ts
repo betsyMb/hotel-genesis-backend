@@ -1,12 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import { RolesService } from '../roles/roles.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
+    private readonly rolesService: RolesService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -33,6 +35,7 @@ export class AuthService {
       email: user.email,
       id_rol: user.id_rol,
       role: user.role.role_name,
+      full_name: user.full_name,
     };
 
     return {
@@ -44,5 +47,27 @@ export class AuthService {
         role: user.role.role_name,
       },
     };
+  }
+
+  async register(registerDto: { full_name: string; email: string; phone?: string; password: string; is_active?: boolean }) {
+    // Get the "Client" role by default (role_name = 'Client')
+    const clientRole = await this.rolesService.findByName('Client');
+    
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+
+    // Create the user
+    const user = await this.usersService.create({
+      full_name: registerDto.full_name,
+      email: registerDto.email,
+      phone: registerDto.phone,
+      password_hash: hashedPassword,
+      id_rol: clientRole.id_rol,
+      is_active: registerDto.is_active ?? true,
+    });
+
+    // Return user without password
+    const { password_hash, ...result } = user;
+    return result;
   }
 }

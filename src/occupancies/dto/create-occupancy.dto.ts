@@ -2,10 +2,10 @@ import { IsInt, IsDate, IsOptional, IsString, IsIn, IsNotEmpty } from 'class-val
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOccupancyDto {
-  @ApiProperty({ example: 1, description: 'Reservation ID' })
+  @ApiProperty({ example: 1, description: 'Reservation ID', required: false })
+  @IsOptional()
   @IsInt()
-  @IsNotEmpty()
-  id_reservation: number;
+  id_reservation?: number | null;
 
   @ApiProperty({ example: 1, description: 'Room ID' })
   @IsInt()

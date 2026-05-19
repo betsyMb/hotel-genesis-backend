@@ -173,7 +173,7 @@ CREATE TABLE promotions (
 -- =============================================
 CREATE TABLE reservation_promotions (
                                         id_reservation_promotion SERIAL PRIMARY KEY,
-                                        id_reservation INTEGER NOT NULL REFERENCES reservations(id_reservation) ON DELETE CASCADE,
+                              id_reservation INTEGER REFERENCES reservations(id_reservation) ON DELETE CASCADE,
                                         id_promotion INTEGER NOT NULL REFERENCES promotions(id_promotion) ON DELETE RESTRICT,
                                         discount_applied DECIMAL(10,2) NOT NULL,
                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

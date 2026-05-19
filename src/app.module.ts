@@ -8,6 +8,7 @@ import { ReservationsModule } from './reservations/reservations.module';
 import { OccupanciesModule } from './occupancies/occupancies.module';
 import { ServicesModule } from './services/services.module';
 import { PromotionsModule } from './promotions/promotions.module';
+import { WalkinModule } from './walkin/walkin.module';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -38,6 +39,7 @@ import { AppService } from './app.service';
     OccupanciesModule,
     ServicesModule,
     PromotionsModule,
+    WalkinModule,
   ],
   controllers: [AppController],
   providers: [AppService],
