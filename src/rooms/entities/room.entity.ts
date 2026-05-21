@@ -35,6 +35,12 @@ export class Room {
   @Column({ type: 'varchar', length: 20, default: 'available' })
   room_status: string;
 
+  @Column({ nullable: true, type: 'text' })
+  maintenance_notes: string;
+
+  @Column({ nullable: true, type: 'jsonb' })
+  maintenance_tasks: { id: string; description: string; completed: boolean }[];
+
   @CreateDateColumn()
   created_at: Date;
 

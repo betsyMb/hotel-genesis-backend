@@ -25,7 +25,7 @@ export class RoomsController {
   }
 
   @Get()
-  @Roles('Administrator', 'Receptionist', 'Manager', 'Client')
+  @Roles('Administrator', 'Receptionist', 'Manager', 'Client', 'Maintenance')
   @ApiOperation({ summary: 'Get all rooms (All authenticated users)' })
   @ApiResponse({ status: 200, description: 'List of all rooms', type: [Room] })
   findAll() {
@@ -33,7 +33,7 @@ export class RoomsController {
   }
 
   @Get(':id')
-  @Roles('Administrator', 'Receptionist', 'Manager', 'Client')
+  @Roles('Administrator', 'Receptionist', 'Manager', 'Client', 'Maintenance')
   @ApiOperation({ summary: 'Get a room by ID (All authenticated users)' })
   @ApiParam({ name: 'id', description: 'Room ID' })
   @ApiResponse({ status: 200, description: 'Room found', type: Room })
@@ -43,13 +43,22 @@ export class RoomsController {
   }
 
   @Patch(':id')
-  @Roles('Administrator', 'Manager')
-  @ApiOperation({ summary: 'Update a room (Admin/Manager only)' })
+  @Roles('Administrator', 'Manager', 'Receptionist', 'Maintenance')
+  @ApiOperation({ summary: 'Update a room (Admin/Manager/Receptionist/Maintenance)' })
   @ApiParam({ name: 'id', description: 'Room ID' })
   @ApiResponse({ status: 200, description: 'Room updated successfully', type: Room })
   @ApiResponse({ status: 404, description: 'Room not found' })
   update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
     return this.roomsService.update(+id, updateRoomDto);
+  }
+
+  @Patch(':id/tasks')
+  @Roles('Administrator', 'Manager', 'Receptionist', 'Maintenance')
+  @ApiOperation({ summary: 'Update maintenance tasks for a room' })
+  @ApiParam({ name: 'id', description: 'Room ID' })
+  @ApiResponse({ status: 200, description: 'Tasks updated successfully' })
+  updateTasks(@Param('id') id: string, @Body() body: { tasks: { id: string; description: string; completed: boolean }[] }) {
+    return this.roomsService.update(+id, { maintenance_tasks: body.tasks } as any);
   }
 
   @Delete(':id')

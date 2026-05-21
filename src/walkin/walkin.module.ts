@@ -8,6 +8,7 @@ import { RoomsModule } from '../rooms/rooms.module';
 import { UsersModule } from '../users/users.module';
 import { RolesModule } from '../roles/roles.module';
 import { OccupanciesModule } from '../occupancies/occupancies.module';
+import { ReservationsModule } from '../reservations/reservations.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OccupanciesModule } from '../occupancies/occupancies.module';
     UsersModule,
     RolesModule,
     OccupanciesModule,
+    ReservationsModule,
   ],
   controllers: [WalkinController],
   providers: [WalkinService],

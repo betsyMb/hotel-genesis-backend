@@ -54,4 +54,13 @@ export class CreateRoomDto {
   @IsString()
   @IsIn(['available', 'occupied', 'maintenance', 'reserved'])
   room_status?: string;
+
+  @ApiProperty({ example: 'Broken AC, needs repair', description: 'Maintenance notes', required: false })
+  @IsOptional()
+  @IsString()
+  maintenance_notes?: string;
+
+  @ApiProperty({ example: [{ id: '1', description: 'Clean the room', completed: false }], description: 'Maintenance tasks checklist', required: false })
+  @IsOptional()
+  maintenance_tasks?: { id: string; description: string; completed: boolean }[];
 }

@@ -46,9 +46,11 @@ CREATE TABLE rooms (
                        square_meters INTEGER,
                        has_view BOOLEAN DEFAULT false,
                        has_balcony BOOLEAN DEFAULT false,
-                       room_status VARCHAR(20) DEFAULT 'available' CHECK (room_status IN ('available', 'occupied', 'maintenance', 'reserved')),
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        room_status VARCHAR(20) DEFAULT 'available' CHECK (room_status IN ('available', 'occupied', 'maintenance', 'reserved')),
+                        maintenance_notes TEXT,
+                        maintenance_tasks JSONB,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =============================================

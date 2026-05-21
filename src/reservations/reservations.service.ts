@@ -23,6 +23,13 @@ export class ReservationsService {
     });
   }
 
+  async findByClient(clientId: number): Promise<Reservation[]> {
+    return await this.reservationRepository.find({
+      where: { id_client: clientId },
+      relations: ['client', 'room'],
+    });
+  }
+
   async findOne(id: number): Promise<Reservation> {
     const reservation = await this.reservationRepository.findOne({
       where: { id_reservation: id },

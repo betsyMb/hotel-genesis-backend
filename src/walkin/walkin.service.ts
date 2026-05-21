@@ -8,6 +8,7 @@ import { RoomsService } from '../rooms/rooms.service';
 import { UsersService } from '../users/users.service';
 import { RolesService } from '../roles/roles.service';
 import { OccupanciesService } from '../occupancies/occupancies.service';
+import { ReservationsService } from '../reservations/reservations.service';
 import { WalkInGuest } from './entities/walk-in-guest.entity';
 import { CheckInDto } from './dto/checkin.dto';
 import { CheckOutDto } from './dto/checkout.dto';
@@ -23,6 +24,7 @@ export class WalkinService {
     private readonly usersService: UsersService,
     private readonly rolesService: RolesService,
     private readonly occupanciesService: OccupanciesService,
+    private readonly reservationsService: ReservationsService,
   ) {}
 
   async checkin(dto: CheckInDto) {
@@ -141,6 +143,12 @@ export class WalkinService {
     } as any);
 
     await this.roomsService.update(room.id_room, { room_status: 'available' } as any);
+
+    if (occupancy.id_reservation) {
+      await this.reservationsService.update(occupancy.id_reservation, {
+        reservation_status: 'completed',
+      } as any);
+    }
 
     return {
       message: 'Check-out successful',

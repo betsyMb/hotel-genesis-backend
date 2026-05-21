@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -25,10 +25,13 @@ export class ReservationsController {
   }
 
   @Get()
-  @Roles('Administrator', 'Receptionist', 'Manager')
-  @ApiOperation({ summary: 'Get all reservations (Admin/Receptionist/Manager)' })
+  @Roles('Administrator', 'Receptionist', 'Manager', 'Client')
+  @ApiOperation({ summary: 'Get all reservations (Admin/Receptionist/Manager/Client)' })
   @ApiResponse({ status: 200, description: 'List of all reservations', type: [Reservation] })
-  findAll() {
+  findAll(@Req() req: any) {
+    if (req.user?.role === 'Client') {
+      return this.reservationsService.findByClient(req.user.id_user);
+    }
     return this.reservationsService.findAll();
   }
 
