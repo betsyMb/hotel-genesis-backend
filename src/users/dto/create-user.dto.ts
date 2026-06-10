@@ -1,4 +1,13 @@
-import { IsString, IsNotEmpty, IsEmail, IsOptional, IsInt, MaxLength, MinLength, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEmail,
+  IsOptional,
+  IsInt,
+  MaxLength,
+  MinLength,
+  IsBoolean,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -13,13 +22,20 @@ export class CreateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: '+1234567890', description: 'Phone number', required: false })
+  @ApiProperty({
+    example: '+1234567890',
+    description: 'Phone number',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @MaxLength(20)
   phone?: string;
 
-  @ApiProperty({ example: 'hashed_password_here', description: 'Hashed password' })
+  @ApiProperty({
+    example: 'hashed_password_here',
+    description: 'Hashed password',
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(6)
@@ -30,12 +46,20 @@ export class CreateUserDto {
   @IsNotEmpty()
   id_rol: number;
 
-  @ApiProperty({ example: true, description: 'Is user active', required: false })
+  @ApiProperty({
+    example: true,
+    description: 'Is user active',
+    required: false,
+  })
   @IsOptional()
   @IsBoolean()
   is_active?: boolean;
 
-  @ApiProperty({ example: 'ExponentPushToken[xxxxxxxx]', description: 'Expo push token', required: false })
+  @ApiProperty({
+    example: 'ExponentPushToken[xxxxxxxx]',
+    description: 'Expo push token',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   push_token?: string;

@@ -1,5 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,7 +36,11 @@ export class ServicesController {
   @Post()
   @Roles('Administrator', 'Manager')
   @ApiOperation({ summary: 'Create a new service (Admin/Manager only)' })
-  @ApiResponse({ status: 201, description: 'Service created successfully', type: Service })
+  @ApiResponse({
+    status: 201,
+    description: 'Service created successfully',
+    type: Service,
+  })
   create(@Body() createServiceDto: CreateServiceDto) {
     return this.servicesService.create(createServiceDto);
   }
@@ -27,7 +48,11 @@ export class ServicesController {
   @Get()
   @Roles('Administrator', 'Receptionist', 'Manager', 'Client')
   @ApiOperation({ summary: 'Get all services (All authenticated users)' })
-  @ApiResponse({ status: 200, description: 'List of all services', type: [Service] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all services',
+    type: [Service],
+  })
   findAll() {
     return this.servicesService.findAll();
   }
@@ -46,7 +71,11 @@ export class ServicesController {
   @Roles('Administrator', 'Manager')
   @ApiOperation({ summary: 'Update a service (Admin/Manager only)' })
   @ApiParam({ name: 'id', description: 'Service ID' })
-  @ApiResponse({ status: 200, description: 'Service updated successfully', type: Service })
+  @ApiResponse({
+    status: 200,
+    description: 'Service updated successfully',
+    type: Service,
+  })
   @ApiResponse({ status: 404, description: 'Service not found' })
   update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
     return this.servicesService.update(+id, updateServiceDto);

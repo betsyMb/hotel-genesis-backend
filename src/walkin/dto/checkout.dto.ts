@@ -7,13 +7,16 @@ export class CheckOutDto {
   @Min(1)
   room_id: number;
 
-  @ApiPropertyOptional({ example: 120.00, description: 'Total amount in USD' })
+  @ApiPropertyOptional({ example: 120.0, description: 'Total amount in USD' })
   @IsOptional()
   @IsNumber()
   @Min(0)
   total_amount?: number;
 
-  @ApiPropertyOptional({ example: 1200.00, description: 'Total amount in Bs (at transaction time)' })
+  @ApiPropertyOptional({
+    example: 1200.0,
+    description: 'Total amount in Bs (at transaction time)',
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)

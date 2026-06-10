@@ -72,7 +72,8 @@ export class NotificationsService {
       const checkIn = r.check_in_date.split('T')[0];
       return (
         checkIn === targetStr &&
-        (r.reservation_status === 'confirmed' || r.reservation_status === 'pending')
+        (r.reservation_status === 'confirmed' ||
+          r.reservation_status === 'pending')
       );
     });
 
@@ -84,7 +85,8 @@ export class NotificationsService {
     const users = await this.usersService.findAll();
     const recipients = users.filter(
       (u) =>
-        u.role?.role_name === 'Administrator' || u.role?.role_name === 'Receptionist',
+        u.role?.role_name === 'Administrator' ||
+        u.role?.role_name === 'Receptionist',
     );
 
     if (recipients.length === 0) {
@@ -97,10 +99,14 @@ export class NotificationsService {
     let createdCount = 0;
 
     for (const reservation of upcoming) {
-      const roomNumber = reservation.room?.room_number || `#${reservation.id_room}`;
-      const clientName = reservation.client?.full_name || `Cliente #${reservation.id_client}`;
+      const roomNumber =
+        reservation.room?.room_number || `#${reservation.id_room}`;
+      const clientName =
+        reservation.client?.full_name || `Cliente #${reservation.id_client}`;
       const statusLabel =
-        reservation.reservation_status === 'confirmed' ? 'Confirmada' : 'Pendiente';
+        reservation.reservation_status === 'confirmed'
+          ? 'Confirmada'
+          : 'Pendiente';
 
       for (const recipient of recipients) {
         const existing = await this.notificationRepository.findOne({
@@ -120,7 +126,10 @@ export class NotificationsService {
         );
         createdCount++;
 
-        if (recipient.push_token && Expo.isExpoPushToken(recipient.push_token)) {
+        if (
+          recipient.push_token &&
+          Expo.isExpoPushToken(recipient.push_token)
+        ) {
           pushTokens.push(recipient.push_token);
         }
       }
@@ -144,6 +153,8 @@ export class NotificationsService {
       }
     }
 
-    this.logger.log(`Created ${createdCount} upcoming reservation notifications`);
+    this.logger.log(
+      `Created ${createdCount} upcoming reservation notifications`,
+    );
   }
 }

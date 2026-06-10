@@ -25,11 +25,15 @@ export class PromotionsService {
     const promotion = await this.promotionRepository.findOne({
       where: { id_promotion: id },
     });
-    if (!promotion) throw new NotFoundException(`Promotion with ID ${id} not found`);
+    if (!promotion)
+      throw new NotFoundException(`Promotion with ID ${id} not found`);
     return promotion;
   }
 
-  async update(id: number, updatePromotionDto: UpdatePromotionDto): Promise<Promotion> {
+  async update(
+    id: number,
+    updatePromotionDto: UpdatePromotionDto,
+  ): Promise<Promotion> {
     const promotion = await this.findOne(id);
     Object.assign(promotion, updatePromotionDto);
     return await this.promotionRepository.save(promotion);

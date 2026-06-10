@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -31,10 +36,14 @@ export class WalkinService {
     const room = await this.roomsService.findOne(dto.room_id);
     if (!room) throw new NotFoundException(`Room ${dto.room_id} not found`);
     if (room.room_status !== 'available') {
-      throw new ConflictException(`Room ${room.room_number} is not available (status: ${room.room_status})`);
+      throw new ConflictException(
+        `Room ${room.room_number} is not available (status: ${room.room_status})`,
+      );
     }
 
-    let user = await this.usersService.findByDni(dto.guest.dni).catch(() => null);
+    let user = await this.usersService
+      .findByDni(dto.guest.dni)
+      .catch(() => null);
 
     if (!user) {
       const clientRole = await this.rolesService.findByName('Client');
@@ -74,7 +83,9 @@ export class WalkinService {
     );
     await this.walkInGuestRepository.save(walkInGuests);
 
-    await this.roomsService.update(room.id_room, { room_status: 'occupied' } as any);
+    await this.roomsService.update(room.id_room, {
+      room_status: 'occupied',
+    } as any);
 
     return {
       message: 'Check-in successful',
@@ -93,16 +104,28 @@ export class WalkinService {
     const occupancyIds = occupancies.map((o) => o.id_occupancy);
     const allGuests =
       occupancyIds.length > 0
-        ? await this.walkInGuestRepository.find({ where: { id_occupancy: In(occupancyIds) } })
+        ? await this.walkInGuestRepository.find({
+            where: { id_occupancy: In(occupancyIds) },
+          })
         : [];
     const guestsByOccupancy = new Map(
-      occupancyIds.map((id) => [id, allGuests.filter((g) => g.id_occupancy === id)]),
+      occupancyIds.map((id) => [
+        id,
+        allGuests.filter((g) => g.id_occupancy === id),
+      ]),
     );
 
     return occupancies.map((o) => {
       const checkIn = new Date(o.actual_check_in);
-      const checkOut = o.actual_check_out ? new Date(o.actual_check_out) : new Date();
-      const totalNights = Math.max(1, Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)));
+      const checkOut = o.actual_check_out
+        ? new Date(o.actual_check_out)
+        : new Date();
+      const totalNights = Math.max(
+        1,
+        Math.ceil(
+          (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24),
+        ),
+      );
 
       return {
         id_occupancy: o.id_occupancy,
@@ -126,27 +149,39 @@ export class WalkinService {
     const room = await this.roomsService.findOne(dto.room_id);
     if (!room) throw new NotFoundException(`Room ${dto.room_id} not found`);
 
-    const activeOccupancies = await this.occupanciesService.findByRoomAndStatus(room.id_room, 'active');
+    const activeOccupancies = await this.occupanciesService.findByRoomAndStatus(
+      room.id_room,
+      'active',
+    );
 
     if (activeOccupancies.length === 0) {
-      throw new NotFoundException(`No active occupancy found for Room ${room.room_number}`);
+      throw new NotFoundException(
+        `No active occupancy found for Room ${room.room_number}`,
+      );
     }
 
     const occupancy = activeOccupancies[0];
     const now = new Date();
     const checkIn = new Date(occupancy.actual_check_in);
-    const totalNights = Math.max(1, Math.ceil((now.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)));
+    const totalNights = Math.max(
+      1,
+      Math.ceil((now.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)),
+    );
 
     const updateData: any = {
       actual_check_out: now,
       occupancy_status: 'completed',
     };
-    if (dto.total_amount !== undefined) updateData.total_amount = dto.total_amount;
-    if (dto.total_amount_bs !== undefined) updateData.total_amount_bs = dto.total_amount_bs;
+    if (dto.total_amount !== undefined)
+      updateData.total_amount = dto.total_amount;
+    if (dto.total_amount_bs !== undefined)
+      updateData.total_amount_bs = dto.total_amount_bs;
 
     await this.occupanciesService.update(occupancy.id_occupancy, updateData);
 
-    await this.roomsService.update(room.id_room, { room_status: 'available' } as any);
+    await this.roomsService.update(room.id_room, {
+      room_status: 'available',
+    } as any);
 
     if (occupancy.id_reservation) {
       await this.reservationsService.update(occupancy.id_reservation, {

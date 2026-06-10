@@ -25,11 +25,15 @@ export class ServicesService {
     const service = await this.serviceRepository.findOne({
       where: { id_service: id },
     });
-    if (!service) throw new NotFoundException(`Service with ID ${id} not found`);
+    if (!service)
+      throw new NotFoundException(`Service with ID ${id} not found`);
     return service;
   }
 
-  async update(id: number, updateServiceDto: UpdateServiceDto): Promise<Service> {
+  async update(
+    id: number,
+    updateServiceDto: UpdateServiceDto,
+  ): Promise<Service> {
     const service = await this.findOne(id);
     Object.assign(service, updateServiceDto);
     return await this.serviceRepository.save(service);

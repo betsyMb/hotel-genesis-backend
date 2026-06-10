@@ -1,5 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards, Req, ForbiddenException } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+  Req,
+  ForbiddenException,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,7 +38,11 @@ export class UsersController {
   @Post()
   @Roles('Administrator', 'Receptionist')
   @ApiOperation({ summary: 'Create a new user (Admin/Receptionist only)' })
-  @ApiResponse({ status: 201, description: 'User created successfully', type: User })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    type: User,
+  })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -44,11 +67,21 @@ export class UsersController {
 
   @Patch(':id')
   @Roles('Administrator', 'Receptionist', 'Client')
-  @ApiOperation({ summary: 'Update a user (Admin/Receptionist/self Client only)' })
+  @ApiOperation({
+    summary: 'Update a user (Admin/Receptionist/self Client only)',
+  })
   @ApiParam({ name: 'id', description: 'User ID' })
-  @ApiResponse({ status: 200, description: 'User updated successfully', type: User })
+  @ApiResponse({
+    status: 200,
+    description: 'User updated successfully',
+    type: User,
+  })
   @ApiResponse({ status: 404, description: 'User not found' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: any) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req: any,
+  ) {
     if (req.user.role === 'Client' && Number(req.user.id_user) !== Number(id)) {
       throw new ForbiddenException('No puedes editar otro usuario');
     }

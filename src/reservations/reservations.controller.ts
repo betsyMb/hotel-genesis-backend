@@ -1,5 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,7 +36,11 @@ export class ReservationsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new reservation' })
-  @ApiResponse({ status: 201, description: 'Reservation created', type: Reservation })
+  @ApiResponse({
+    status: 201,
+    description: 'Reservation created',
+    type: Reservation,
+  })
   create(@Body() dto: CreateReservationDto, @CurrentUser() user: any) {
     if (user?.role === 'Client') {
       dto.id_client = user.id_user;
@@ -31,7 +52,11 @@ export class ReservationsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('Administrator', 'Receptionist', 'Manager', 'Client')
   @ApiOperation({ summary: 'Get all reservations' })
-  @ApiResponse({ status: 200, description: 'List of reservations', type: [Reservation] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of reservations',
+    type: [Reservation],
+  })
   findAll(@CurrentUser() user: any) {
     if (user.role === 'Client') {
       return this.reservationsService.findByClient(user.id_user);
@@ -44,7 +69,11 @@ export class ReservationsController {
   @Roles('Administrator', 'Receptionist', 'Manager', 'Client')
   @ApiOperation({ summary: 'Get a reservation by ID' })
   @ApiParam({ name: 'id', description: 'Reservation ID' })
-  @ApiResponse({ status: 200, description: 'Reservation found', type: Reservation })
+  @ApiResponse({
+    status: 200,
+    description: 'Reservation found',
+    type: Reservation,
+  })
   @ApiResponse({ status: 404, description: 'Reservation not found' })
   async findOne(@Param('id') id: string, @CurrentUser() user: any) {
     if (user.role === 'Client') {
@@ -58,9 +87,17 @@ export class ReservationsController {
   @Roles('Administrator', 'Receptionist', 'Client')
   @ApiOperation({ summary: 'Update a reservation' })
   @ApiParam({ name: 'id', description: 'Reservation ID' })
-  @ApiResponse({ status: 200, description: 'Reservation updated', type: Reservation })
+  @ApiResponse({
+    status: 200,
+    description: 'Reservation updated',
+    type: Reservation,
+  })
   @ApiResponse({ status: 404, description: 'Reservation not found' })
-  async update(@Param('id') id: string, @Body() dto: UpdateReservationDto, @CurrentUser() user: any) {
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateReservationDto,
+    @CurrentUser() user: any,
+  ) {
     if (user.role === 'Client') {
       return this.reservationsService.updateByClient(+id, dto, user.id_user);
     }

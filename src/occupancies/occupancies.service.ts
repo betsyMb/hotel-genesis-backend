@@ -28,11 +28,15 @@ export class OccupanciesService {
       where: { id_occupancy: id },
       relations: ['reservation', 'room'],
     });
-    if (!occupancy) throw new NotFoundException(`Occupancy with ID ${id} not found`);
+    if (!occupancy)
+      throw new NotFoundException(`Occupancy with ID ${id} not found`);
     return occupancy;
   }
 
-  async update(id: number, updateOccupancyDto: UpdateOccupancyDto): Promise<Occupancy> {
+  async update(
+    id: number,
+    updateOccupancyDto: UpdateOccupancyDto,
+  ): Promise<Occupancy> {
     const occupancy = await this.findOne(id);
     Object.assign(occupancy, updateOccupancyDto);
     return await this.occupancyRepository.save(occupancy);
@@ -43,7 +47,10 @@ export class OccupanciesService {
     await this.occupancyRepository.remove(occupancy);
   }
 
-  async findByRoomAndStatus(roomId: number, status: string): Promise<Occupancy[]> {
+  async findByRoomAndStatus(
+    roomId: number,
+    status: string,
+  ): Promise<Occupancy[]> {
     return await this.occupancyRepository.find({
       where: { id_room: roomId, occupancy_status: status },
       relations: ['reservation', 'room'],

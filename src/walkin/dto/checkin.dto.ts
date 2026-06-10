@@ -1,4 +1,14 @@
-import { IsString, IsNotEmpty, IsOptional, IsInt, Min, Max, IsArray, ValidateNested, Matches } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsInt,
+  Min,
+  Max,
+  IsArray,
+  ValidateNested,
+  Matches,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -35,7 +45,10 @@ export class CheckInDto {
   @Type(() => GuestDto)
   guest: GuestDto;
 
-  @ApiPropertyOptional({ description: 'Additional guests staying in the room', type: [GuestDto] })
+  @ApiPropertyOptional({
+    description: 'Additional guests staying in the room',
+    type: [GuestDto],
+  })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })

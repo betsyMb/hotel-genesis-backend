@@ -1,4 +1,14 @@
-import { IsString, IsNotEmpty, IsInt, IsNumber, IsOptional, IsBoolean, MaxLength, Min, IsIn } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsBoolean,
+  MaxLength,
+  Min,
+  IsIn,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRoomDto {
@@ -8,7 +18,11 @@ export class CreateRoomDto {
   @MaxLength(10)
   room_number: string;
 
-  @ApiProperty({ example: 'simple', description: 'Room type', enum: ['simple', 'double', 'suite', 'family'] })
+  @ApiProperty({
+    example: 'simple',
+    description: 'Room type',
+    enum: ['simple', 'double', 'suite', 'family'],
+  })
   @IsString()
   @IsNotEmpty()
   @IsIn(['simple', 'double', 'suite', 'family'])
@@ -19,12 +33,16 @@ export class CreateRoomDto {
   @IsNotEmpty()
   floor: number;
 
-  @ApiProperty({ example: 80.00, description: 'Price per night' })
+  @ApiProperty({ example: 80.0, description: 'Price per night' })
   @IsNumber()
   @Min(0.01)
   price_per_night: number;
 
-  @ApiProperty({ example: 'Cozy single room', description: 'Room description', required: false })
+  @ApiProperty({
+    example: 'Cozy single room',
+    description: 'Room description',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   description?: string;
@@ -49,18 +67,31 @@ export class CreateRoomDto {
   @IsBoolean()
   has_balcony?: boolean;
 
-  @ApiProperty({ example: 'available', description: 'Room status', enum: ['available', 'occupied', 'maintenance', 'reserved'], required: false })
+  @ApiProperty({
+    example: 'available',
+    description: 'Room status',
+    enum: ['available', 'occupied', 'maintenance', 'reserved'],
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @IsIn(['available', 'occupied', 'maintenance', 'reserved'])
   room_status?: string;
 
-  @ApiProperty({ example: 'Broken AC, needs repair', description: 'Maintenance notes', required: false })
+  @ApiProperty({
+    example: 'Broken AC, needs repair',
+    description: 'Maintenance notes',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   maintenance_notes?: string;
 
-  @ApiProperty({ example: [{ id: '1', description: 'Clean the room', completed: false }], description: 'Maintenance tasks checklist', required: false })
+  @ApiProperty({
+    example: [{ id: '1', description: 'Clean the room', completed: false }],
+    description: 'Maintenance tasks checklist',
+    required: false,
+  })
   @IsOptional()
   maintenance_tasks?: { id: string; description: string; completed: boolean }[];
 }

@@ -1,4 +1,12 @@
-import { IsInt, IsNumber, IsOptional, IsString, Min, IsIn, IsNotEmpty } from 'class-validator';
+import {
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  IsIn,
+  IsNotEmpty,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateReservationDto {
@@ -12,12 +20,18 @@ export class CreateReservationDto {
   @IsNotEmpty()
   id_room: number;
 
-  @ApiProperty({ example: '2026-05-01', description: 'Check-in date (ISO string or YYYY-MM-DD)' })
+  @ApiProperty({
+    example: '2026-05-01',
+    description: 'Check-in date (ISO string or YYYY-MM-DD)',
+  })
   @IsString()
   @IsNotEmpty()
   check_in_date: string;
 
-  @ApiProperty({ example: '2026-05-05', description: 'Check-out date (ISO string or YYYY-MM-DD)' })
+  @ApiProperty({
+    example: '2026-05-05',
+    description: 'Check-out date (ISO string or YYYY-MM-DD)',
+  })
   @IsString()
   @IsNotEmpty()
   check_out_date: string;
@@ -28,24 +42,37 @@ export class CreateReservationDto {
   @Min(1)
   number_of_guests?: number;
 
-  @ApiProperty({ example: 'pending', description: 'Reservation status', enum: ['pending', 'confirmed', 'cancelled', 'completed', 'no_show'], required: false })
+  @ApiProperty({
+    example: 'pending',
+    description: 'Reservation status',
+    enum: ['pending', 'confirmed', 'cancelled', 'completed', 'no_show'],
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @IsIn(['pending', 'confirmed', 'cancelled', 'completed', 'no_show'])
   reservation_status?: string;
 
-  @ApiProperty({ example: 320.00, description: 'Total amount in USD' })
+  @ApiProperty({ example: 320.0, description: 'Total amount in USD' })
   @IsNumber()
   @Min(0)
   total_amount: number;
 
-  @ApiProperty({ example: 3200.00, description: 'Total amount in Bs (at transaction time)', required: false })
+  @ApiProperty({
+    example: 3200.0,
+    description: 'Total amount in Bs (at transaction time)',
+    required: false,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   total_amount_bs?: number;
 
-  @ApiProperty({ example: 'Late arrival', description: 'Notes', required: false })
+  @ApiProperty({
+    example: 'Late arrival',
+    description: 'Notes',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   notes?: string;

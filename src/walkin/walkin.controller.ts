@@ -1,5 +1,18 @@
-import { Controller, Get, Post, Body, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -17,7 +30,9 @@ export class WalkinController {
 
   @Post('checkin')
   @Roles('Administrator', 'Receptionist')
-  @ApiOperation({ summary: 'Walk-in check-in: register a guest without prior reservation' })
+  @ApiOperation({
+    summary: 'Walk-in check-in: register a guest without prior reservation',
+  })
   @ApiResponse({ status: 201, description: 'Check-in successful' })
   @ApiResponse({ status: 409, description: 'Room is not available' })
   checkin(@Body() dto: CheckInDto) {
@@ -27,16 +42,24 @@ export class WalkinController {
   @Get('history')
   @Roles('Administrator', 'Receptionist')
   @ApiOperation({ summary: 'Get walk-in check-in/out history' })
-  @ApiResponse({ status: 200, description: 'Returns completed walk-in occupancies' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns completed walk-in occupancies',
+  })
   history() {
     return this.walkinService.getHistory();
   }
 
   @Post('checkout')
   @Roles('Administrator', 'Receptionist')
-  @ApiOperation({ summary: 'Walk-in check-out: complete an active walk-in occupancy' })
+  @ApiOperation({
+    summary: 'Walk-in check-out: complete an active walk-in occupancy',
+  })
   @ApiResponse({ status: 200, description: 'Check-out successful' })
-  @ApiResponse({ status: 404, description: 'No active occupancy found for this room' })
+  @ApiResponse({
+    status: 404,
+    description: 'No active occupancy found for this room',
+  })
   checkout(@Body() dto: CheckOutDto) {
     return this.walkinService.checkout(dto);
   }

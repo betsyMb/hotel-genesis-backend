@@ -50,10 +50,16 @@ export class AuthService {
     };
   }
 
-  async register(registerDto: { full_name: string; email: string; phone?: string; password: string; is_active?: boolean }) {
+  async register(registerDto: {
+    full_name: string;
+    email: string;
+    phone?: string;
+    password: string;
+    is_active?: boolean;
+  }) {
     // Get the "Client" role by default (role_name = 'Client')
     const clientRole = await this.rolesService.findByName('Client');
-    
+
     // Hash the password
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 

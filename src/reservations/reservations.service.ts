@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Reservation } from './entities/reservation.entity';
@@ -26,7 +31,9 @@ export class ReservationsService {
     let query = this.reservationRepository
       .createQueryBuilder('r')
       .where('r.id_room = :id_room', { id_room })
-      .andWhere('r.reservation_status IN (:...statuses)', { statuses: ['pending', 'confirmed'] })
+      .andWhere('r.reservation_status IN (:...statuses)', {
+        statuses: ['pending', 'confirmed'],
+      })
       .andWhere('r.check_in_date < :checkOut AND r.check_out_date > :checkIn', {
         checkIn,
         checkOut,
@@ -39,17 +46,23 @@ export class ReservationsService {
     const overlapping = await query.getMany();
 
     return {
-      confirmed: overlapping.filter((r) => r.reservation_status === 'confirmed'),
+      confirmed: overlapping.filter(
+        (r) => r.reservation_status === 'confirmed',
+      ),
       pending: overlapping.filter((r) => r.reservation_status === 'pending'),
     };
   }
 
-  async create(createReservationDto: CreateReservationDto): Promise<Reservation> {
+  async create(
+    createReservationDto: CreateReservationDto,
+  ): Promise<Reservation> {
     const checkIn = this.toDateOnly(createReservationDto.check_in_date);
     const checkOut = this.toDateOnly(createReservationDto.check_out_date);
 
     if (checkOut <= checkIn) {
-      throw new BadRequestException('Check-out date must be after check-in date');
+      throw new BadRequestException(
+        'Check-out date must be after check-in date',
+      );
     }
 
     const { confirmed, pending } = await this.checkOverlap(
@@ -107,7 +120,8 @@ export class ReservationsService {
       where: { id_reservation: id },
       relations: ['client', 'room'],
     });
-    if (!reservation) throw new NotFoundException(`Reservation with ID ${id} not found`);
+    if (!reservation)
+      throw new NotFoundException(`Reservation with ID ${id} not found`);
     return reservation;
   }
 
@@ -120,21 +134,34 @@ export class ReservationsService {
     return reservation;
   }
 
-  async update(id: number, updateReservationDto: UpdateReservationDto): Promise<Reservation> {
+  async update(
+    id: number,
+    updateReservationDto: UpdateReservationDto,
+  ): Promise<Reservation> {
     const reservation = await this.findOne(id);
     const data = { ...updateReservationDto };
-    if (data.check_in_date) data.check_in_date = this.toDateOnly(data.check_in_date) as any;
-    if (data.check_out_date) data.check_out_date = this.toDateOnly(data.check_out_date) as any;
+    if (data.check_in_date)
+      data.check_in_date = this.toDateOnly(data.check_in_date) as any;
+    if (data.check_out_date)
+      data.check_out_date = this.toDateOnly(data.check_out_date) as any;
 
-    const effectiveIn = (data.check_in_date as string) || reservation.check_in_date;
-    const effectiveOut = (data.check_out_date as string) || reservation.check_out_date;
+    const effectiveIn =
+      (data.check_in_date as string) || reservation.check_in_date;
+    const effectiveOut =
+      (data.check_out_date as string) || reservation.check_out_date;
     const effectiveRoom = data.id_room ?? reservation.id_room;
 
     if (effectiveOut <= effectiveIn) {
-      throw new BadRequestException('Check-out date must be after check-in date');
+      throw new BadRequestException(
+        'Check-out date must be after check-in date',
+      );
     }
 
-    if (data.check_in_date || data.check_out_date || data.id_room !== undefined) {
+    if (
+      data.check_in_date ||
+      data.check_out_date ||
+      data.id_room !== undefined
+    ) {
       const { confirmed, pending } = await this.checkOverlap(
         effectiveRoom,
         effectiveIn,
@@ -157,21 +184,35 @@ export class ReservationsService {
     return await this.reservationRepository.save(reservation);
   }
 
-  async updateByClient(id: number, updateReservationDto: UpdateReservationDto, clientId: number): Promise<Reservation> {
+  async updateByClient(
+    id: number,
+    updateReservationDto: UpdateReservationDto,
+    clientId: number,
+  ): Promise<Reservation> {
     const reservation = await this.findByClientAndId(id, clientId);
     const data = { ...updateReservationDto };
-    if (data.check_in_date) data.check_in_date = this.toDateOnly(data.check_in_date) as any;
-    if (data.check_out_date) data.check_out_date = this.toDateOnly(data.check_out_date) as any;
+    if (data.check_in_date)
+      data.check_in_date = this.toDateOnly(data.check_in_date) as any;
+    if (data.check_out_date)
+      data.check_out_date = this.toDateOnly(data.check_out_date) as any;
 
-    const effectiveIn = (data.check_in_date as string) || reservation.check_in_date;
-    const effectiveOut = (data.check_out_date as string) || reservation.check_out_date;
+    const effectiveIn =
+      (data.check_in_date as string) || reservation.check_in_date;
+    const effectiveOut =
+      (data.check_out_date as string) || reservation.check_out_date;
     const effectiveRoom = data.id_room ?? reservation.id_room;
 
     if (effectiveOut <= effectiveIn) {
-      throw new BadRequestException('Check-out date must be after check-in date');
+      throw new BadRequestException(
+        'Check-out date must be after check-in date',
+      );
     }
 
-    if (data.check_in_date || data.check_out_date || data.id_room !== undefined) {
+    if (
+      data.check_in_date ||
+      data.check_out_date ||
+      data.id_room !== undefined
+    ) {
       const { confirmed, pending } = await this.checkOverlap(
         effectiveRoom,
         effectiveIn,

@@ -1,5 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,7 +36,11 @@ export class RoomsController {
   @Post()
   @Roles('Administrator', 'Manager')
   @ApiOperation({ summary: 'Create a new room (Admin/Manager only)' })
-  @ApiResponse({ status: 201, description: 'Room created successfully', type: Room })
+  @ApiResponse({
+    status: 201,
+    description: 'Room created successfully',
+    type: Room,
+  })
   create(@Body() createRoomDto: CreateRoomDto) {
     return this.roomsService.create(createRoomDto);
   }
@@ -44,9 +65,15 @@ export class RoomsController {
 
   @Patch(':id')
   @Roles('Administrator', 'Manager', 'Receptionist', 'Maintenance')
-  @ApiOperation({ summary: 'Update a room (Admin/Manager/Receptionist/Maintenance)' })
+  @ApiOperation({
+    summary: 'Update a room (Admin/Manager/Receptionist/Maintenance)',
+  })
   @ApiParam({ name: 'id', description: 'Room ID' })
-  @ApiResponse({ status: 200, description: 'Room updated successfully', type: Room })
+  @ApiResponse({
+    status: 200,
+    description: 'Room updated successfully',
+    type: Room,
+  })
   @ApiResponse({ status: 404, description: 'Room not found' })
   update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
     return this.roomsService.update(+id, updateRoomDto);
@@ -57,8 +84,14 @@ export class RoomsController {
   @ApiOperation({ summary: 'Update maintenance tasks for a room' })
   @ApiParam({ name: 'id', description: 'Room ID' })
   @ApiResponse({ status: 200, description: 'Tasks updated successfully' })
-  updateTasks(@Param('id') id: string, @Body() body: { tasks: { id: string; description: string; completed: boolean }[] }) {
-    return this.roomsService.update(+id, { maintenance_tasks: body.tasks } as any);
+  updateTasks(
+    @Param('id') id: string,
+    @Body()
+    body: { tasks: { id: string; description: string; completed: boolean }[] },
+  ) {
+    return this.roomsService.update(+id, {
+      maintenance_tasks: body.tasks,
+    } as any);
   }
 
   @Delete(':id')

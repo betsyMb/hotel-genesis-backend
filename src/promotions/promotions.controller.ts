@@ -1,5 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,7 +36,11 @@ export class PromotionsController {
   @Post()
   @Roles('Administrator', 'Manager')
   @ApiOperation({ summary: 'Create a new promotion (Admin/Manager only)' })
-  @ApiResponse({ status: 201, description: 'Promotion created successfully', type: Promotion })
+  @ApiResponse({
+    status: 201,
+    description: 'Promotion created successfully',
+    type: Promotion,
+  })
   create(@Body() createPromotionDto: CreatePromotionDto) {
     return this.promotionsService.create(createPromotionDto);
   }
@@ -27,7 +48,11 @@ export class PromotionsController {
   @Get()
   @Roles('Administrator', 'Receptionist', 'Manager', 'Client')
   @ApiOperation({ summary: 'Get all promotions (All authenticated users)' })
-  @ApiResponse({ status: 200, description: 'List of all promotions', type: [Promotion] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all promotions',
+    type: [Promotion],
+  })
   findAll() {
     return this.promotionsService.findAll();
   }
@@ -46,9 +71,16 @@ export class PromotionsController {
   @Roles('Administrator', 'Manager')
   @ApiOperation({ summary: 'Update a promotion (Admin/Manager only)' })
   @ApiParam({ name: 'id', description: 'Promotion ID' })
-  @ApiResponse({ status: 200, description: 'Promotion updated successfully', type: Promotion })
+  @ApiResponse({
+    status: 200,
+    description: 'Promotion updated successfully',
+    type: Promotion,
+  })
   @ApiResponse({ status: 404, description: 'Promotion not found' })
-  update(@Param('id') id: string, @Body() updatePromotionDto: UpdatePromotionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePromotionDto: UpdatePromotionDto,
+  ) {
     return this.promotionsService.update(+id, updatePromotionDto);
   }
 

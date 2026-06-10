@@ -1,4 +1,15 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsDate, Min, Max, IsBoolean, MaxLength, IsIn } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsNumber,
+  IsDate,
+  Min,
+  Max,
+  IsBoolean,
+  MaxLength,
+  IsIn,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePromotionDto {
@@ -8,19 +19,31 @@ export class CreatePromotionDto {
   @MaxLength(50)
   promotion_code: string;
 
-  @ApiProperty({ example: '10% off for new guests', description: 'Description', required: false })
+  @ApiProperty({
+    example: '10% off for new guests',
+    description: 'Description',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ example: 10.00, description: 'Discount percent (0-100)', required: false })
+  @ApiProperty({
+    example: 10.0,
+    description: 'Discount percent (0-100)',
+    required: false,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(100)
   discount_percent?: number;
 
-  @ApiProperty({ example: 50.00, description: 'Discount amount', required: false })
+  @ApiProperty({
+    example: 50.0,
+    description: 'Discount amount',
+    required: false,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
@@ -46,7 +69,11 @@ export class CreatePromotionDto {
   @Min(1)
   max_usage?: number;
 
-  @ApiProperty({ example: true, description: 'Is promotion active', required: false })
+  @ApiProperty({
+    example: true,
+    description: 'Is promotion active',
+    required: false,
+  })
   @IsOptional()
   @IsBoolean()
   is_active?: boolean;

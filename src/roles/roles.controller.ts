@@ -1,5 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,7 +36,11 @@ export class RolesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new role (Admin/Manager only)' })
-  @ApiResponse({ status: 201, description: 'Role created successfully', type: Role })
+  @ApiResponse({
+    status: 201,
+    description: 'Role created successfully',
+    type: Role,
+  })
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.create(createRoleDto);
   }
@@ -43,7 +64,11 @@ export class RolesController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update a role (Admin/Manager only)' })
   @ApiParam({ name: 'id', description: 'Role ID' })
-  @ApiResponse({ status: 200, description: 'Role updated successfully', type: Role })
+  @ApiResponse({
+    status: 200,
+    description: 'Role updated successfully',
+    type: Role,
+  })
   @ApiResponse({ status: 404, description: 'Role not found' })
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.update(+id, updateRoleDto);

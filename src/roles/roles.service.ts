@@ -39,7 +39,9 @@ export class RolesService {
   }
 
   async findByName(roleName: string): Promise<Role> {
-    const role = await this.roleRepository.findOne({ where: { role_name: roleName } });
+    const role = await this.roleRepository.findOne({
+      where: { role_name: roleName },
+    });
     if (!role) throw new NotFoundException(`Role ${roleName} not found`);
     return role;
   }
