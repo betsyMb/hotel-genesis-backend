@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Type } from 'class-transformer';
 import { User } from '../../users/entities/user.entity';
 import { Room } from '../../rooms/entities/room.entity';
 
@@ -21,11 +22,11 @@ export class Reservation {
   @JoinColumn({ name: 'id_room' })
   room: Room;
 
-  @Column()
-  check_in_date: Date;
+  @Column({ type: 'date' })
+  check_in_date: string;
 
-  @Column()
-  check_out_date: Date;
+  @Column({ type: 'date' })
+  check_out_date: string;
 
   @Column({ default: 1 })
   number_of_guests: number;
@@ -33,11 +34,14 @@ export class Reservation {
   @Column({ type: 'varchar', length: 20, default: 'pending' })
   reservation_status: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   reservation_date: Date;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   total_amount: number;
+
+  @Column({ type: 'decimal', precision: 12, scale: 2, nullable: true })
+  total_amount_bs: number;
 
   @Column({ nullable: true, type: 'text' })
   notes: string;

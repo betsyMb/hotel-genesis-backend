@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards, Req, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -43,12 +43,15 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @Roles('Administrator', 'Receptionist')
-  @ApiOperation({ summary: 'Update a user (Admin/Receptionist only)' })
+  @Roles('Administrator', 'Receptionist', 'Client')
+  @ApiOperation({ summary: 'Update a user (Admin/Receptionist/self Client only)' })
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({ status: 200, description: 'User updated successfully', type: User })
   @ApiResponse({ status: 404, description: 'User not found' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: any) {
+    if (req.user.role === 'Client' && Number(req.user.id_user) !== Number(id)) {
+      throw new ForbiddenException('No puedes editar otro usuario');
+    }
     return this.usersService.update(+id, updateUserDto);
   }
 

@@ -1,4 +1,4 @@
-import { IsInt, IsDate, IsNumber, IsOptional, IsString, Min, IsIn, IsNotEmpty } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString, Min, IsIn, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateReservationDto {
@@ -12,13 +12,15 @@ export class CreateReservationDto {
   @IsNotEmpty()
   id_room: number;
 
-  @ApiProperty({ example: '2026-05-01', description: 'Check-in date' })
+  @ApiProperty({ example: '2026-05-01', description: 'Check-in date (ISO string or YYYY-MM-DD)' })
+  @IsString()
   @IsNotEmpty()
-  check_in_date: Date;
+  check_in_date: string;
 
-  @ApiProperty({ example: '2026-05-05', description: 'Check-out date' })
+  @ApiProperty({ example: '2026-05-05', description: 'Check-out date (ISO string or YYYY-MM-DD)' })
+  @IsString()
   @IsNotEmpty()
-  check_out_date: Date;
+  check_out_date: string;
 
   @ApiProperty({ example: 2, description: 'Number of guests', required: false })
   @IsOptional()
@@ -32,10 +34,16 @@ export class CreateReservationDto {
   @IsIn(['pending', 'confirmed', 'cancelled', 'completed', 'no_show'])
   reservation_status?: string;
 
-  @ApiProperty({ example: 320.00, description: 'Total amount' })
+  @ApiProperty({ example: 320.00, description: 'Total amount in USD' })
   @IsNumber()
   @Min(0)
   total_amount: number;
+
+  @ApiProperty({ example: 3200.00, description: 'Total amount in Bs (at transaction time)', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  total_amount_bs?: number;
 
   @ApiProperty({ example: 'Late arrival', description: 'Notes', required: false })
   @IsOptional()

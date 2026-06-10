@@ -34,6 +34,12 @@ export class Occupancy {
   @Column({ nullable: true, type: 'text' })
   guest_signature: string;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  total_amount: number;
+
+  @Column({ type: 'decimal', precision: 12, scale: 2, nullable: true })
+  total_amount_bs: number;
+
   @OneToMany(() => WalkInGuest, (wg) => wg.occupancy)
   walk_in_guests?: WalkInGuest[];
 

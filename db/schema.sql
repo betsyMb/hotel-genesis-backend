@@ -66,10 +66,11 @@ CREATE TABLE reservations (
                               reservation_status VARCHAR(20) DEFAULT 'pending' CHECK (reservation_status IN ('pending', 'confirmed', 'cancelled', 'completed', 'no_show')),
                               reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               total_amount DECIMAL(10,2) NOT NULL CHECK (total_amount >= 0),
+                              total_amount_bs DECIMAL(12,2) DEFAULT NULL,
                               notes TEXT,
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                              CONSTRAINT check_dates CHECK (check_out_date > check_in_date)
+                              CONSTRAINT check_dates CHECK (check_out_date >= check_in_date)
 );
 
 -- =============================================
@@ -77,12 +78,14 @@ CREATE TABLE reservations (
 -- =============================================
 CREATE TABLE occupancies (
                              id_occupancy SERIAL PRIMARY KEY,
-                             id_reservation INTEGER NOT NULL REFERENCES reservations(id_reservation) ON DELETE CASCADE,
+                             id_reservation INTEGER REFERENCES reservations(id_reservation) ON DELETE CASCADE,
                              id_room INTEGER NOT NULL REFERENCES rooms(id_room) ON DELETE RESTRICT,
                              actual_check_in TIMESTAMP NOT NULL,
                              actual_check_out TIMESTAMP,
                              occupancy_status VARCHAR(20) DEFAULT 'active' CHECK (occupancy_status IN ('active', 'completed', 'no_show')),
                              guest_signature TEXT,
+                             total_amount DECIMAL(10,2) DEFAULT NULL CHECK (total_amount >= 0),
+                             total_amount_bs DECIMAL(12,2) DEFAULT NULL,
                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

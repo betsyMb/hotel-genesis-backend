@@ -34,6 +34,9 @@ export class User {
   @Column({ nullable: true })
   last_login: Date;
 
+  @Column({ nullable: true, type: 'text' })
+  push_token: string | null;
+
   @CreateDateColumn()
   created_at: Date;
 

@@ -1,4 +1,12 @@
-import { IsInt, IsDate, IsOptional, IsString, IsIn, IsNotEmpty } from 'class-validator';
+import {
+  IsInt,
+  IsOptional,
+  IsString,
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOccupancyDto {
@@ -30,4 +38,16 @@ export class CreateOccupancyDto {
   @IsOptional()
   @IsString()
   guest_signature?: string;
+
+  @ApiProperty({ example: 120.00, description: 'Total amount in USD', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  total_amount?: number;
+
+  @ApiProperty({ example: 1200.00, description: 'Total amount in Bs (at transaction time)', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  total_amount_bs?: number;
 }

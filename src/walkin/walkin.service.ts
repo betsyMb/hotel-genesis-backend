@@ -137,10 +137,14 @@ export class WalkinService {
     const checkIn = new Date(occupancy.actual_check_in);
     const totalNights = Math.max(1, Math.ceil((now.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)));
 
-    await this.occupanciesService.update(occupancy.id_occupancy, {
+    const updateData: any = {
       actual_check_out: now,
       occupancy_status: 'completed',
-    } as any);
+    };
+    if (dto.total_amount !== undefined) updateData.total_amount = dto.total_amount;
+    if (dto.total_amount_bs !== undefined) updateData.total_amount_bs = dto.total_amount_bs;
+
+    await this.occupanciesService.update(occupancy.id_occupancy, updateData);
 
     await this.roomsService.update(room.id_room, { room_status: 'available' } as any);
 

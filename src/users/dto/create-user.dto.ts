@@ -34,4 +34,9 @@ export class CreateUserDto {
   @IsOptional()
   @IsBoolean()
   is_active?: boolean;
+
+  @ApiProperty({ example: 'ExponentPushToken[xxxxxxxx]', description: 'Expo push token', required: false })
+  @IsOptional()
+  @IsString()
+  push_token?: string;
 }
