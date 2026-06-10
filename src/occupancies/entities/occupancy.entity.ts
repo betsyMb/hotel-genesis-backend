@@ -49,6 +49,9 @@ export class Occupancy {
   @Column({ type: 'decimal', precision: 12, scale: 2, nullable: true })
   total_amount_bs: number;
 
+  @Column({ type: 'varchar', length: 10, default: 'nightly' })
+  service_type: string;
+
   @OneToMany(() => WalkInGuest, (wg) => wg.occupancy)
   walk_in_guests?: WalkInGuest[];
 

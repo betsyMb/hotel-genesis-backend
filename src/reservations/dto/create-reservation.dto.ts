@@ -76,4 +76,15 @@ export class CreateReservationDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @ApiProperty({
+    example: 'nightly',
+    description: 'Service type',
+    enum: ['nightly', '3hours'],
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn(['nightly', '3hours'])
+  service_type?: string;
 }

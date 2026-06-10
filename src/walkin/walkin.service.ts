@@ -70,6 +70,7 @@ export class WalkinService {
       actual_check_in: now,
       occupancy_status: 'active',
       guest_signature: `${dto.guest.first_name} ${dto.guest.last_name}`,
+      service_type: dto.service_type || 'nightly',
     } as any);
 
     const allGuests = [dto.guest, ...(dto.additional_guests || [])];
@@ -139,6 +140,7 @@ export class WalkinService {
           phone: g.phone,
         })),
         total_nights: totalNights,
+        service_type: o.service_type || 'nightly',
         checked_in: o.actual_check_in,
         checked_out: o.actual_check_out,
       };
@@ -161,6 +163,7 @@ export class WalkinService {
     }
 
     const occupancy = activeOccupancies[0];
+    const serviceType = occupancy.service_type || 'nightly';
     const now = new Date();
     const checkIn = new Date(occupancy.actual_check_in);
     const totalNights = Math.max(
@@ -195,6 +198,7 @@ export class WalkinService {
       room_number: room.room_number,
       occupancy_id: occupancy.id_occupancy,
       total_nights: totalNights,
+      service_type: serviceType,
       checked_in: occupancy.actual_check_in,
       checked_out: now,
     };

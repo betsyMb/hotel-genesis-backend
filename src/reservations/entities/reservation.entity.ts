@@ -51,6 +51,9 @@ export class Reservation {
   @Column({ type: 'decimal', precision: 12, scale: 2, nullable: true })
   total_amount_bs: number;
 
+  @Column({ type: 'varchar', length: 10, default: 'nightly' })
+  service_type: string;
+
   @Column({ nullable: true, type: 'text' })
   notes: string;
 

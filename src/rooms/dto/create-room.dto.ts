@@ -38,6 +38,12 @@ export class CreateRoomDto {
   @Min(0.01)
   price_per_night: number;
 
+  @ApiProperty({ example: 30.0, description: 'Price per 3-hour block', required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  price_per_3hours?: number;
+
   @ApiProperty({
     example: 'Cozy single room',
     description: 'Room description',

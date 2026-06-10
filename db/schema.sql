@@ -40,7 +40,8 @@ CREATE TABLE rooms (
                        room_number VARCHAR(10) NOT NULL UNIQUE,
                        room_type VARCHAR(20) NOT NULL CHECK (room_type IN ('simple', 'double', 'suite', 'family')),
                        floor INTEGER NOT NULL,
-                       price_per_night DECIMAL(10,2) NOT NULL CHECK (price_per_night > 0),
+                        price_per_night DECIMAL(10,2) NOT NULL CHECK (price_per_night > 0),
+                        price_per_3hours DECIMAL(10,2) NOT NULL DEFAULT 0 CHECK (price_per_3hours >= 0),
                        description TEXT,
                        capacity INTEGER DEFAULT 2,
                        square_meters INTEGER,
@@ -66,8 +67,9 @@ CREATE TABLE reservations (
                               reservation_status VARCHAR(20) DEFAULT 'pending' CHECK (reservation_status IN ('pending', 'confirmed', 'cancelled', 'completed', 'no_show')),
                               reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               total_amount DECIMAL(10,2) NOT NULL CHECK (total_amount >= 0),
-                              total_amount_bs DECIMAL(12,2) DEFAULT NULL,
-                              notes TEXT,
+                               total_amount_bs DECIMAL(12,2) DEFAULT NULL,
+                               service_type VARCHAR(10) DEFAULT 'nightly' CHECK (service_type IN ('nightly', '3hours')),
+                               notes TEXT,
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               CONSTRAINT check_dates CHECK (check_out_date >= check_in_date)
@@ -85,8 +87,9 @@ CREATE TABLE occupancies (
                              occupancy_status VARCHAR(20) DEFAULT 'active' CHECK (occupancy_status IN ('active', 'completed', 'no_show')),
                              guest_signature TEXT,
                              total_amount DECIMAL(10,2) DEFAULT NULL CHECK (total_amount >= 0),
-                             total_amount_bs DECIMAL(12,2) DEFAULT NULL,
-                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                              total_amount_bs DECIMAL(12,2) DEFAULT NULL,
+                              service_type VARCHAR(10) DEFAULT 'nightly' CHECK (service_type IN ('nightly', '3hours')),
+                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

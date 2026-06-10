@@ -23,6 +23,9 @@ export class Room {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price_per_night: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  price_per_3hours: number;
+
   @Column({ nullable: true, type: 'text' })
   description: string;
 

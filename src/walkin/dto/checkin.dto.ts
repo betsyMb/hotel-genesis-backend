@@ -4,10 +4,9 @@ import {
   IsOptional,
   IsInt,
   Min,
-  Max,
   IsArray,
   ValidateNested,
-  Matches,
+  IsIn,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -54,4 +53,14 @@ export class CheckInDto {
   @ValidateNested({ each: true })
   @Type(() => GuestDto)
   additional_guests?: GuestDto[];
+
+  @ApiPropertyOptional({
+    example: 'nightly',
+    description: 'Service type',
+    enum: ['nightly', '3hours'],
+  })
+  @IsOptional()
+  @IsString()
+  @IsIn(['nightly', '3hours'])
+  service_type?: string;
 }
