@@ -22,17 +22,21 @@ import { AppService } from './app.service';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('DB_HOST', 'localhost'),
-        port: config.get('DB_PORT', 5432),
-        username: config.get('DB_USERNAME', 'hotel_admin'),
-        password: config.get('DB_PASSWORD', 'hotel_secure_password_2024'),
-        database: config.get('DB_DATABASE', 'hotel_db'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: false,
-        logging: true,
-      }),
+      useFactory: (config: ConfigService) => {
+        const sslEnabled = config.get<string>('DB_SSL', 'false');
+        return {
+          type: 'postgres',
+          host: config.get('DB_HOST', 'localhost'),
+          port: config.get('DB_PORT', 5432),
+          username: config.get('DB_USERNAME', 'hotel_admin'),
+          password: config.get('DB_PASSWORD', 'hotel_secure_password_2024'),
+          database: config.get('DB_DATABASE', 'hotel_db'),
+          ssl: sslEnabled === 'true' ? { rejectUnauthorized: false } : false,
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: false,
+          logging: true,
+        };
+      },
     }),
     AuthModule,
     RolesModule,
