@@ -234,12 +234,12 @@ INSERT INTO users (full_name, email, phone, password_hash, id_rol, is_active) VA
 
 -- Insert sample rooms
 INSERT INTO rooms (room_number, room_type, floor, price_per_night, description, capacity, square_meters, has_view, has_balcony) VALUES
-                                                                                                                                    ('101', 'simple', 1, 80.00, 'Cozy single room with city view', 1, 20, true, false),
-                                                                                                                                    ('102', 'double', 1, 120.00, 'Comfortable double room', 2, 25, false, true),
-                                                                                                                                    ('201', 'suite', 2, 250.00, 'Luxury suite with panoramic view', 4, 50, true, true),
-                                                                                                                                    ('202', 'family', 2, 180.00, 'Spacious family room', 4, 40, true, false),
-                                                                                                                                    ('301', 'double', 3, 150.00, 'Premium double with balcony', 2, 30, true, true),
-                                                                                                                                    ('302', 'simple', 3, 90.00, 'Simple room with mountain view', 1, 22, true, false);
+                                                                                                                                    ('01', 'simple', 1, 80.00, 'Cozy single room with city view', 1, 20, true, false),
+                                                                                                                                    ('02', 'double', 1, 120.00, 'Comfortable double room', 2, 25, false, true),
+                                                                                                                                    ('03', 'suite', 2, 250.00, 'Luxury suite with panoramic view', 4, 50, true, true),
+                                                                                                                                    ('04', 'family', 2, 180.00, 'Spacious family room', 4, 40, true, false),
+                                                                                                                                    ('05', 'double', 3, 150.00, 'Premium double with balcony', 2, 30, true, true),
+                                                                                                                                    ('06', 'simple', 3, 90.00, 'Simple room with mountain view', 1, 22, true, false);
 
 -- Insert sample services
 INSERT INTO services (service_name, description, price, is_active) VALUES
