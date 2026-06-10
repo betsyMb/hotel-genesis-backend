@@ -23,15 +23,32 @@ import { AppService } from './app.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        const sslEnabled = config.get<string>('DB_SSL', 'false');
+        const dbHost = config.get<string>('DB_HOST', 'localhost');
+        const dbPort = config.get('DB_PORT', 5432);
+        const dbUser = config.get<string>('DB_USERNAME', 'hotel_admin');
+        const dbName = config.get<string>('DB_DATABASE', 'hotel_db');
+        const dbSslRaw = config.get<string>('DB_SSL', 'false');
+        const isNeon = dbHost.includes('neon.tech');
+        const sslEnabled = dbSslRaw === 'true' || isNeon;
+
+        console.log('=== DB CONFIG ===');
+        console.log('Host:', dbHost);
+        console.log('Port:', dbPort);
+        console.log('User:', dbUser);
+        console.log('Database:', dbName);
+        console.log('DB_SSL raw:', dbSslRaw);
+        console.log('Is Neon:', isNeon);
+        console.log('SSL enabled:', sslEnabled);
+        console.log('================');
+
         return {
           type: 'postgres',
-          host: config.get('DB_HOST', 'localhost'),
-          port: config.get('DB_PORT', 5432),
-          username: config.get('DB_USERNAME', 'hotel_admin'),
+          host: dbHost,
+          port: dbPort,
+          username: dbUser,
           password: config.get('DB_PASSWORD', 'hotel_secure_password_2024'),
-          database: config.get('DB_DATABASE', 'hotel_db'),
-          ssl: sslEnabled === 'true' ? { rejectUnauthorized: false } : false,
+          database: dbName,
+          ssl: sslEnabled ? { rejectUnauthorized: false } : false,
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: false,
           logging: true,
