@@ -25,6 +25,7 @@ import { Roles } from '../auth/roles.decorator';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 import { User } from './entities/user.entity';
 
 @ApiTags('users')
@@ -86,6 +87,23 @@ export class UsersController {
       throw new ForbiddenException('No puedes editar otro usuario');
     }
     return this.usersService.update(+id, updateUserDto);
+  }
+
+  @Patch(':id/password')
+  @ApiOperation({ summary: 'Update user password only' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'Password updated', type: User })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  updatePassword(
+    @Param('id') id: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+    @Req() req: any,
+  ) {
+    const userId = Number(id);
+    if (req.user.role === 'Client' && Number(req.user.id_user) !== userId) {
+      throw new ForbiddenException('No puedes cambiar la contraseña de otro usuario');
+    }
+    return this.usersService.updatePassword(userId, updatePasswordDto.password);
   }
 
   @Delete(':id')
