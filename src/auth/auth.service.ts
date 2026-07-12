@@ -60,15 +60,11 @@ export class AuthService {
     // Get the "Client" role by default (role_name = 'Client')
     const clientRole = await this.rolesService.findByName('Client');
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-
-    // Create the user
     const user = await this.usersService.create({
       full_name: registerDto.full_name,
       email: registerDto.email,
       phone: registerDto.phone,
-      password_hash: hashedPassword,
+      password_hash: registerDto.password,
       id_rol: clientRole.id_rol,
       is_active: registerDto.is_active ?? true,
     });

@@ -19,7 +19,10 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     if (createUserDto.password_hash) {
-      createUserDto.password_hash = await bcrypt.hash(createUserDto.password_hash, 10);
+      createUserDto.password_hash = await bcrypt.hash(
+        createUserDto.password_hash,
+        10,
+      );
     }
     const user = this.userRepository.create(createUserDto);
     return await this.userRepository.save(user);
@@ -42,19 +45,31 @@ export class UsersService {
     const user = await this.userRepository.findOne({ where: { id_user: id } });
     if (!user) throw new NotFoundException(`User with ID ${id} not found`);
     if (updateUserDto.password_hash) {
-      updateUserDto.password_hash = await bcrypt.hash(updateUserDto.password_hash, 10);
+      updateUserDto.password_hash = await bcrypt.hash(
+        updateUserDto.password_hash,
+        10,
+      );
     }
     Object.assign(user, updateUserDto);
     await this.userRepository.save(user);
     return await this.findOne(id);
   }
 
-  async updatePassword(id: number, password: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id_user: id } });
+  async updatePassword(id: number, password: string, currentPassword?: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id_user: id },
+      relations: ['role'],
+    });
     if (!user) throw new NotFoundException(`User with ID ${id} not found`);
+    if (currentPassword) {
+      const isValid = await bcrypt.compare(currentPassword, user.password_hash);
+      if (!isValid) {
+        throw new UnauthorizedException('La contraseña actual no es correcta');
+      }
+    }
     user.password_hash = await bcrypt.hash(password, 10);
     await this.userRepository.save(user);
-    return await this.findOne(id);
+    return user;
   }
 
   async remove(id: number): Promise<void> {

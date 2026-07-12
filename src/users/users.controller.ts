@@ -11,6 +11,8 @@ import {
   UseGuards,
   Req,
   ForbiddenException,
+  BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -44,8 +46,13 @@ export class UsersController {
     description: 'User created successfully',
     type: User,
   })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    try {
+      return await this.usersService.create(createUserDto);
+    } catch (error: any) {
+      if (error.code === '23505') throw new BadRequestException('El email o DNI ya está registrado');
+      throw new InternalServerErrorException(error.message || 'Error al crear usuario');
+    }
   }
 
   @Get()
@@ -78,15 +85,21 @@ export class UsersController {
     type: User,
   })
   @ApiResponse({ status: 404, description: 'User not found' })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
     @Req() req: any,
   ) {
-    if (req.user.role === 'Client' && Number(req.user.id_user) !== Number(id)) {
-      throw new ForbiddenException('No puedes editar otro usuario');
+    try {
+      if (req.user.role === 'Client' && Number(req.user.id_user) !== Number(id)) {
+        throw new ForbiddenException('No puedes editar otro usuario');
+      }
+      return await this.usersService.update(+id, updateUserDto);
+    } catch (error: any) {
+      if (error instanceof ForbiddenException) throw error;
+      if (error.code === '23505') throw new BadRequestException('El email o DNI ya está registrado');
+      throw new InternalServerErrorException(error.message || 'Error al actualizar usuario');
     }
-    return this.usersService.update(+id, updateUserDto);
   }
 
   @Patch(':id/password')
@@ -94,16 +107,25 @@ export class UsersController {
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({ status: 200, description: 'Password updated', type: User })
   @ApiResponse({ status: 404, description: 'User not found' })
-  updatePassword(
+  async updatePassword(
     @Param('id') id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
     @Req() req: any,
   ) {
-    const userId = Number(id);
-    if (req.user.role === 'Client' && Number(req.user.id_user) !== userId) {
-      throw new ForbiddenException('No puedes cambiar la contraseña de otro usuario');
+    try {
+      const userId = Number(id);
+      if (req.user.role === 'Client' && Number(req.user.id_user) !== userId) {
+        throw new ForbiddenException('No puedes cambiar la contraseña de otro usuario');
+      }
+      const currentPassword = req.user.role === 'Client' ? updatePasswordDto.currentPassword : undefined;
+      if (req.user.role === 'Client' && !currentPassword) {
+        throw new BadRequestException('Debes proporcionar tu contraseña actual');
+      }
+      return await this.usersService.updatePassword(userId, updatePasswordDto.password, currentPassword);
+    } catch (error: any) {
+      if (error instanceof ForbiddenException || error instanceof BadRequestException) throw error;
+      throw new InternalServerErrorException(error.message || 'Error al cambiar contraseña');
     }
-    return this.usersService.updatePassword(userId, updatePasswordDto.password);
   }
 
   @Delete(':id')
@@ -112,7 +134,12 @@ export class UsersController {
   @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.usersService.remove(+id);
+    } catch (error: any) {
+      if (error.code === '23503') throw new BadRequestException('No se puede eliminar: el usuario tiene reservas u otros registros asociados');
+      throw new InternalServerErrorException(error.message || 'Error al eliminar usuario');
+    }
   }
 }

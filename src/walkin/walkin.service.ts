@@ -48,13 +48,11 @@ export class WalkinService {
     if (!user) {
       const clientRole = await this.rolesService.findByName('Client');
       const email = `walkin-${dto.guest.dni}@hotel.app`;
-      const hashedPassword = await bcrypt.hash(dto.guest.dni, 10);
-
       user = await this.usersService.create({
         full_name: `${dto.guest.first_name} ${dto.guest.last_name}`,
         email,
         phone: dto.guest.phone_number || '',
-        password_hash: hashedPassword,
+        password_hash: dto.guest.dni,
         id_rol: clientRole.id_rol,
         dni: dto.guest.dni,
         is_active: true,
