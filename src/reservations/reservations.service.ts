@@ -60,9 +60,14 @@ export class ReservationsService {
     const checkOut = this.toDateOnly(createReservationDto.check_out_date);
 
     if (checkOut <= checkIn) {
-      throw new BadRequestException(
-        'Check-out date must be after check-in date',
-      );
+      if (
+        createReservationDto.service_type !== '3hours' ||
+        checkOut < checkIn
+      ) {
+        throw new BadRequestException(
+          'Check-out date must be after check-in date',
+        );
+      }
     }
 
     const { confirmed, pending } = await this.checkOverlap(
@@ -152,9 +157,12 @@ export class ReservationsService {
     const effectiveRoom = data.id_room ?? reservation.id_room;
 
     if (effectiveOut <= effectiveIn) {
-      throw new BadRequestException(
-        'Check-out date must be after check-in date',
-      );
+      const effectiveService = data.service_type ?? reservation.service_type;
+      if (effectiveService !== '3hours' || effectiveOut < effectiveIn) {
+        throw new BadRequestException(
+          'Check-out date must be after check-in date',
+        );
+      }
     }
 
     if (
@@ -203,9 +211,12 @@ export class ReservationsService {
     const effectiveRoom = data.id_room ?? reservation.id_room;
 
     if (effectiveOut <= effectiveIn) {
-      throw new BadRequestException(
-        'Check-out date must be after check-in date',
-      );
+      const effectiveService = data.service_type ?? reservation.service_type;
+      if (effectiveService !== '3hours' || effectiveOut < effectiveIn) {
+        throw new BadRequestException(
+          'Check-out date must be after check-in date',
+        );
+      }
     }
 
     if (
