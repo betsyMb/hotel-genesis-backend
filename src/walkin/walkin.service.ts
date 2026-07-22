@@ -161,6 +161,17 @@ export class WalkinService {
     }
 
     const occupancy = activeOccupancies[0];
+
+    if (occupancy.id_reservation) {
+      const reservation = await this.reservationsService.findOne(occupancy.id_reservation);
+      if (reservation.reservation_status === 'cancelled' || reservation.reservation_status === 'no_show') {
+        throw new BadRequestException(
+          `Cannot check out: reservation is ${reservation.reservation_status}`,
+        );
+      }
+    }
+
+    const occupancy = activeOccupancies[0];
     const serviceType = occupancy.service_type || 'nightly';
     const now = new Date();
     const checkIn = new Date(occupancy.actual_check_in);
