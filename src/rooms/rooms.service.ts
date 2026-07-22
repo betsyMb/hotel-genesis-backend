@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Room } from './entities/room.entity';
@@ -29,6 +29,14 @@ export class RoomsService {
 
   async update(id: number, updateRoomDto: UpdateRoomDto): Promise<Room> {
     const room = await this.findOne(id);
+    if (
+      updateRoomDto.room_status === 'maintenance' &&
+      room.room_status === 'occupied'
+    ) {
+      throw new BadRequestException(
+        'No se puede enviar a mantenimiento una habitación ocupada',
+      );
+    }
     Object.assign(room, updateRoomDto);
     return await this.roomRepository.save(room);
   }
