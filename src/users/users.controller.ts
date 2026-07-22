@@ -94,6 +94,19 @@ export class UsersController {
       if (req.user.role === 'Client' && Number(req.user.id_user) !== Number(id)) {
         throw new ForbiddenException('No puedes editar otro usuario');
       }
+
+      if (updateUserDto.id_rol !== undefined) {
+        const targetUser = await this.usersService.findOne(+id);
+        const isEditingSelf = Number(req.user.id_user) === Number(id);
+        if (isEditingSelf && targetUser.role?.role_name === 'Administrator') {
+          const allUsers = await this.usersService.findAll();
+          const adminCount = allUsers.filter((u: any) => u.role?.role_name === 'Administrator').length;
+          if (adminCount <= 1) {
+            throw new BadRequestException('No puedes cambiar tu rol siendo el único administrador.');
+          }
+        }
+      }
+
       return await this.usersService.update(+id, updateUserDto);
     } catch (error: any) {
       if (error instanceof ForbiddenException) throw error;

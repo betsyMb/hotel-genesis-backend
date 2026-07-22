@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { RolesService } from '../roles/roles.service';
@@ -50,6 +50,15 @@ export class AuthService {
     };
   }
 
+  async verifyPassword(email: string, password: string): Promise<{ valid: boolean }> {
+    const user = await this.usersService.findByEmail(email).catch(() => null);
+    if (!user) {
+      return { valid: false };
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    return { valid: isPasswordValid };
+  }
+
   async register(registerDto: {
     full_name: string;
     email: string;
@@ -57,7 +66,15 @@ export class AuthService {
     password: string;
     is_active?: boolean;
   }) {
-    // Get the "Client" role by default (role_name = 'Client')
+    const existingUser = await this.usersService
+      .findByEmail(registerDto.email)
+      .catch(() => null);
+    if (existingUser) {
+      throw new ConflictException(
+        'Este correo ya está registrado. Comuníquese con el hotel para asignarle una contraseña.',
+      );
+    }
+
     const clientRole = await this.rolesService.findByName('Client');
 
     const user = await this.usersService.create({

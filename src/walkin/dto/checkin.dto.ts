@@ -31,6 +31,11 @@ export class GuestDto {
   @IsOptional()
   @IsString()
   phone_number?: string;
+
+  @ApiPropertyOptional({ example: 'guest@email.com', description: 'Email address' })
+  @IsOptional()
+  @IsString()
+  email?: string;
 }
 
 export class CheckInDto {

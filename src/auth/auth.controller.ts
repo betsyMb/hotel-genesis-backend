@@ -9,6 +9,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { VerifyPasswordDto } from './dto/verify-password.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,6 +26,13 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async login(@Body() loginDto: LoginDto) {
     return await this.authService.login(loginDto);
+  }
+
+  @Post('verify-password')
+  @ApiOperation({ summary: 'Verify admin password before sensitive actions' })
+  @ApiResponse({ status: 200, description: 'Password verified' })
+  async verifyPassword(@Body() dto: VerifyPasswordDto) {
+    return await this.authService.verifyPassword(dto.email, dto.password);
   }
 
   @Post('register')

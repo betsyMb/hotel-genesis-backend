@@ -45,9 +45,20 @@ export class WalkinService {
       .findByDni(dto.guest.dni)
       .catch(() => null);
 
-    if (!user) {
+    if (user) {
+      const updateData: any = {};
+      if (dto.guest.phone_number && dto.guest.phone_number !== user.phone) {
+        updateData.phone = dto.guest.phone_number;
+      }
+      if (dto.guest.email && dto.guest.email !== user.email) {
+        updateData.email = dto.guest.email;
+      }
+      if (Object.keys(updateData).length > 0) {
+        await this.usersService.update(user.id_user, updateData);
+      }
+    } else {
       const clientRole = await this.rolesService.findByName('Client');
-      const email = `walkin-${dto.guest.dni}@hotel.app`;
+      const email = dto.guest.email || `walkin-${dto.guest.dni}@hotel.app`;
       user = await this.usersService.create({
         full_name: `${dto.guest.first_name} ${dto.guest.last_name}`,
         email,
@@ -60,7 +71,11 @@ export class WalkinService {
     }
 
     const now = new Date();
-    const checkOutEstimate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const reservationDate = new Date(now);
+    reservationDate.setHours(14, 0, 0, 0);
+    const checkOutEstimate = new Date(now);
+    checkOutEstimate.setDate(checkOutEstimate.getDate() + 1);
+    checkOutEstimate.setHours(12, 0, 0, 0);
 
     const occupancy = await this.occupanciesService.create({
       id_reservation: null,

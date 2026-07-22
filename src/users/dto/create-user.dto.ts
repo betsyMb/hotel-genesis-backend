@@ -63,4 +63,14 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   push_token?: string;
+
+  @ApiProperty({
+    example: '12345678A',
+    description: 'DNI / ID number',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  dni?: string;
 }
