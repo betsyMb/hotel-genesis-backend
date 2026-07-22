@@ -144,6 +144,18 @@ export class ReservationsService {
     updateReservationDto: UpdateReservationDto,
   ): Promise<Reservation> {
     const reservation = await this.findOne(id);
+
+    if (
+      (reservation.reservation_status === 'cancelled' ||
+        reservation.reservation_status === 'no_show') &&
+      updateReservationDto.reservation_status &&
+      updateReservationDto.reservation_status !== reservation.reservation_status
+    ) {
+      throw new BadRequestException(
+        'No se puede modificar el estado de una reserva cancelada o no show.',
+      );
+    }
+
     const data = { ...updateReservationDto };
     if (data.check_in_date)
       data.check_in_date = this.toDateOnly(data.check_in_date) as any;
@@ -198,7 +210,15 @@ export class ReservationsService {
     clientId: number,
   ): Promise<Reservation> {
     const reservation = await this.findByClientAndId(id, clientId);
+
+    if (reservation.reservation_status === 'confirmed') {
+      throw new BadRequestException(
+        'No se puede modificar una reserva ya confirmada.',
+      );
+    }
+
     const data = { ...updateReservationDto };
+
     if (data.check_in_date)
       data.check_in_date = this.toDateOnly(data.check_in_date) as any;
     if (data.check_out_date)
