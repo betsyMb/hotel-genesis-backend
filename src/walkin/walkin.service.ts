@@ -171,7 +171,6 @@ export class WalkinService {
       }
     }
 
-    const occupancy = activeOccupancies[0];
     const serviceType = occupancy.service_type || 'nightly';
     const now = new Date();
     const checkIn = new Date(occupancy.actual_check_in);
