@@ -47,8 +47,6 @@ async function bootstrap() {
     .addTag('rooms', 'Rooms endpoints')
     .addTag('reservations', 'Reservations endpoints')
     .addTag('occupancies', 'Occupancies endpoints')
-    .addTag('services', 'Services endpoints')
-    .addTag('promotions', 'Promotions endpoints')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

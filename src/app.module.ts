@@ -7,11 +7,8 @@ import { UsersModule } from './users/users.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { OccupanciesModule } from './occupancies/occupancies.module';
-import { ServicesModule } from './services/services.module';
-import { PromotionsModule } from './promotions/promotions.module';
 import { WalkinModule } from './walkin/walkin.module';
 import { AuthModule } from './auth/auth.module';
-import { NotificationsModule } from './notifications/notifications.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -57,13 +54,10 @@ import { AppService } from './app.service';
     }),
     AuthModule,
     RolesModule,
-    NotificationsModule,
     UsersModule,
     RoomsModule,
     ReservationsModule,
     OccupanciesModule,
-    ServicesModule,
-    PromotionsModule,
     WalkinModule,
   ],
   controllers: [AppController],
