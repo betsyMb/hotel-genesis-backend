@@ -6,8 +6,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 
 import { RoomsService } from '../rooms/rooms.service';
 import { UsersService } from '../users/users.service';
@@ -17,8 +15,6 @@ import { ReservationsService } from '../reservations/reservations.service';
 import { WalkInGuest } from './entities/walk-in-guest.entity';
 import { CheckInDto } from './dto/checkin.dto';
 import { CheckOutDto } from './dto/checkout.dto';
-import { Room } from '../rooms/entities/room.entity';
-import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class WalkinService {
@@ -45,6 +41,12 @@ export class WalkinService {
       .findByDni(dto.guest.dni)
       .catch(() => null);
 
+    if (!user && dto.guest.email) {
+      user = await this.usersService
+        .findByEmail(dto.guest.email)
+        .catch(() => null);
+    }
+
     if (user) {
       const updateData: any = {};
       if (dto.guest.phone_number && dto.guest.phone_number !== user.phone) {
@@ -52,6 +54,9 @@ export class WalkinService {
       }
       if (dto.guest.email && dto.guest.email !== user.email) {
         updateData.email = dto.guest.email;
+      }
+      if (dto.guest.dni && dto.guest.dni !== user.dni) {
+        updateData.dni = dto.guest.dni;
       }
       if (Object.keys(updateData).length > 0) {
         await this.usersService.update(user.id_user, updateData);
